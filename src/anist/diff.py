@@ -44,7 +44,7 @@ def create_or_update_diff(
     staged_stash = ""
     if has_staged:
         print_if_not_quiet("Stashing staged changes...")
-        staged_stash = stash_changes("anist_staged_changes_diff")
+        staged_stash = stash_changes("anist_staged_changes_diff", staged_only=True)
 
     try:
         # Get the commit hash for the specified position
@@ -87,10 +87,10 @@ def create_or_update_diff(
         # Build the arc diff command
         if create_mode:
             print_if_not_quiet("Creating new diff...")
-            diff_cmd = ["arc", "diff", "HEAD~1", "--nolint"]
+            diff_cmd = ["arc", "diff", "HEAD~1"]
         else:
             print_if_not_quiet(f"Updating {diff_id}...")
-            diff_cmd = ["arc", "diff", "HEAD~1", "--nolint", "--update", diff_id]
+            diff_cmd = ["arc", "diff", "HEAD~1", "--update", diff_id]
 
         # Add message if provided
         if message:
@@ -117,10 +117,10 @@ def create_or_update_diff(
         # Restore any stashed changes
         if has_staged:
             print_if_not_quiet("Restoring staged changes...")
-            apply_stash(staged_stash)
+            apply_stash(staged_stash, keep_index=True)
         if has_unstaged:
             print_if_not_quiet("Restoring unstaged changes...")
-            apply_stash(unstaged_stash)
+            apply_stash(unstaged_stash, keep_index=False)
 
 
 def update_diff_stack(message: str, create_mode: bool = False):

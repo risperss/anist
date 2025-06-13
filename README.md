@@ -185,7 +185,7 @@ anist diff --full-stack -m "Address code review feedback"
 
 This updates all diffs in your stack with a single command.
 
-## Technical Details 🔧
+### Technical Details 🔧
 
 ### How Commit Editing Works ✏️
 
@@ -193,8 +193,10 @@ The `commit` command:
 
 1. Uses Git's interactive rebase feature with custom automation
 2. Creates a temporary rebase script that marks only your target commit for editing
-3. Handles the stashing and application of changes to maintain your workspace state
-4. Automatically continues the rebase when changes are applied successfully
+3. Properly stashes both staged and unstaged changes separately, maintaining their status
+4. Applies staged changes with `--index` to keep them staged during amend
+5. Automatically continues the rebase when changes are applied successfully
+6. Reapplies unstaged changes after the rebase is complete
 
 ### How Diff Management Works 📊
 
@@ -255,6 +257,14 @@ anist diff -n 3 -m "Refactored authentication logic"
 ```
 
 ## Troubleshooting 🔍
+
+### Changes Not Maintaining Staged/Unstaged Status
+
+If you notice that your staged changes become unstaged after running `anist commit`:
+
+1. Make sure you're using the latest version of `anist` which properly preserves staging status
+2. You can always re-stage the changes with `git add <files>` if needed
+3. The improved stash handling now correctly maintains the staged vs. unstaged status of files
 
 ### Error: "Could not determine the diff ID" ❓
 

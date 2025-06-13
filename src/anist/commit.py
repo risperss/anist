@@ -45,7 +45,7 @@ def edit_nth_commit(position: int):
     staged_stash = ""
     if has_staged:
         print_if_not_quiet("Stashing staged changes...")
-        staged_stash = stash_changes("anist_staged_changes")
+        staged_stash = stash_changes("anist_staged_changes", staged_only=True)
 
     try:
         # Get the commit hash to edit
@@ -101,7 +101,7 @@ def edit_nth_commit(position: int):
         # Apply the staged changes first if we had any
         if has_staged:
             print_if_not_quiet("Applying staged changes...")
-            apply_stash(staged_stash)
+            apply_stash(staged_stash, keep_index=True)
 
             # Check if there were merge conflicts
             if has_merge_conflicts():
@@ -133,7 +133,7 @@ def edit_nth_commit(position: int):
         # Apply unstaged changes if we had any (after rebase is complete)
         if has_unstaged:
             print_if_not_quiet("Applying unstaged changes...")
-            apply_stash(unstaged_stash)
+            apply_stash(unstaged_stash, keep_index=False)
             print_if_not_quiet("Your unstaged changes have been applied.")
 
         print_if_not_quiet("\nRebase successfully completed!")
@@ -144,11 +144,11 @@ def edit_nth_commit(position: int):
         # Try to restore stashed changes if there was an error
         if has_unstaged:
             print("Attempting to restore unstaged changes...")
-            apply_stash(unstaged_stash)
+            apply_stash(unstaged_stash, keep_index=False)
 
         if has_staged:
             print("Attempting to restore staged changes...")
-            apply_stash(staged_stash)
+            apply_stash(staged_stash, keep_index=True)
 
         print("Check 'git status' to see the current state.")
         sys.exit(1)

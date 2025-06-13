@@ -107,36 +107,53 @@ def check_changes() -> Tuple[bool, bool]:
     return (has_staged, has_unstaged)
 
 
-def stash_changes(message: str) -> str:
+def stash_changes(message: str, staged_only: bool = False) -> str:
     """
     Stash changes with the given message and return the stash hash.
     Returns empty string if no changes were stashed.
+
+    Args:
+        message: Message to associate with the stash
+        staged_only: If True, stash only staged changes
     """
     # First check if there are any changes to stash
     status_result = run_command(["git", "status", "--porcelain"], capture_output=True)
     if not status_result.stdout.strip():
         return ""  # No changes to stash
 
-    # Create a stash
-    stash_result = run_command(
-        ["git", "stash", "create", message], capture_output=True
+    # Use git stash push with appropriate flags
+    stash_cmd = ["git", "stash", "push", "-m", message]
+
+    # If we only want staged changes, add --staged flag
+    if staged_only:
+        stash_cmd.append("--staged")
+
+    # Create the stash and get its reference
+    run_command(stash_cmd, capture_output=True)
+
+    # Get the stash reference - should be stash@{0}
+    stash_list = run_command(
+        ["git", "stash", "list", "-n", "1", "--format=%H %gd"], capture_output=True
     ).stdout.strip()
 
-    if not stash_result:
+    if not stash_list:
         return ""  # No stash was created
 
-    # Store the stash with a reference
-    run_command(["git", "stash", "store", "-m", message, stash_result])
+    # Extract the stash reference
+    parts = stash_list.split()
+    if len(parts) < 2:
+        return ""
 
-    # Clean the working directory
-    run_command(["git", "reset", "--hard", "HEAD"])
-
-    return stash_result
+    return parts[0]  # Return the hash
 
 
-def apply_stash(stash_ref: str) -> bool:
+def apply_stash(stash_ref: str, keep_index: bool = False) -> bool:
     """
     Apply and drop a specific stash. Returns True if successful.
+
+    Args:
+        stash_ref: Reference to the stash to apply
+        keep_index: If True, try to preserve the staging status of files
     """
     if not stash_ref:
         return False
@@ -156,7 +173,13 @@ def apply_stash(stash_ref: str) -> bool:
                     break
 
         if stash_index:
-            run_command(["git", "stash", "apply", stash_index])
+            # Apply the stash, preserving index if requested
+            apply_cmd = ["git", "stash", "apply"]
+            if keep_index:
+                apply_cmd.append("--index")
+            apply_cmd.append(stash_index)
+
+            run_command(apply_cmd)
             run_command(["git", "stash", "drop", stash_index])
             return True
         return False
