@@ -17,7 +17,8 @@ classifiers = [
 ]
 
 [project.scripts]
-anist = "src.cli:main"
+anist = "anist.cli:main"
 
 [tool.setuptools]
-packages = ["src"]
+package-dir = { "" = "src" }
+packages = ["anist"]

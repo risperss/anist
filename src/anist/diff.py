@@ -3,7 +3,7 @@
 src/diff.py - Diff-related functionality for the Arc Ninja Stack Tool
 """
 
-from src.utils import (
+from anist.utils import (
     apply_stash,
     check_changes,
     find_diff_id_in_commit,
@@ -171,7 +171,6 @@ def update_diff_command(
         full_stack: If True, process all commits in the stack
     """
     if full_stack:
-        print("Processing all commits in the stack...")
         update_diff_stack(message, create)
     else:
         create_or_update_diff(position, message, create)

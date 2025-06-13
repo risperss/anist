@@ -7,7 +7,7 @@ import os
 import sys
 import tempfile
 
-from src.utils import (
+from anist.utils import (
     apply_stash,
     check_changes,
     get_commit_hash_by_position,
@@ -30,8 +30,8 @@ def edit_nth_commit(position: int):
     # Check for staged and unstaged changes
     has_staged, has_unstaged = check_changes()
 
-    if not (has_staged or has_unstaged):
-        print("No changes to commit. Nothing to do.")
+    if not has_staged:
+        print("No staged changes to commit. Nothing to do.")
         sys.exit(0)
 
     # Stash unstaged changes first (if any)

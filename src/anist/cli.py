@@ -8,8 +8,8 @@ import sys
 import typer
 from rich import print as rprint
 
-from src.commit import edit_nth_commit
-from src.diff import update_diff_command
+from anist.commit import edit_nth_commit
+from anist.diff import update_diff_command
 
 app = typer.Typer(help="Anist - Arc Ninja Stack Tool for managing stacked diffs")
 commit_app = typer.Typer(help="Edit a commit in the stack")
