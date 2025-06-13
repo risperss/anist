@@ -10,6 +10,7 @@ from rich import print as rprint
 
 from anist.commit import edit_nth_commit
 from anist.diff import update_diff_command
+from anist.state import rich_print_if_not_quiet, set_quiet
 
 app = typer.Typer(help="Anist - Arc Ninja Stack Tool for managing stacked diffs")
 commit_app = typer.Typer(help="Edit a commit in the stack")
@@ -20,6 +21,17 @@ app.add_typer(commit_app, name="commit")
 app.add_typer(diff_app, name="diff")
 
 
+# Add callback for the main app to handle global options
+@app.callback()
+def global_options(
+    quiet: bool = typer.Option(
+        False, "--quiet", help="Suppress output from subcommands, except errors"
+    ),
+):
+    """Configure global CLI options."""
+    set_quiet(quiet)
+
+
 @commit_app.callback(invoke_without_command=True)
 def commit_main(
     position: int = typer.Option(
@@ -27,7 +39,9 @@ def commit_main(
     ),
 ):
     """Edit a specific commit in the stack."""
-    rprint(f"[bold blue]Editing commit at position {position}...[/bold blue]")
+    rich_print_if_not_quiet(
+        f"[bold blue]Editing commit at position {position}...[/bold blue]"
+    )
     edit_nth_commit(position)
 
 
@@ -48,9 +62,13 @@ def diff_main(
 ):
     """Create or update diffs for commits."""
     if full_stack:
-        rprint("[bold blue]Processing all commits in the stack...[/bold blue]")
+        rich_print_if_not_quiet(
+            "[bold blue]Processing all commits in the stack...[/bold blue]"
+        )
     else:
-        rprint(f"[bold blue]Processing commit at position {position}...[/bold blue]")
+        rich_print_if_not_quiet(
+            f"[bold blue]Processing commit at position {position}...[/bold blue]"
+        )
 
     update_diff_command(position, message, create, full_stack)
 

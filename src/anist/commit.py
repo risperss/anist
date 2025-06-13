@@ -7,6 +7,7 @@ import os
 import sys
 import tempfile
 
+from anist.state import print_if_not_quiet
 from anist.utils import (
     apply_stash,
     check_changes,
@@ -37,19 +38,19 @@ def edit_nth_commit(position: int):
     # Stash unstaged changes first (if any)
     unstaged_stash = ""
     if has_unstaged:
-        print("Stashing unstaged changes...")
+        print_if_not_quiet("Stashing unstaged changes...")
         unstaged_stash = stash_changes("anist_unstaged_changes")
 
     # Stash staged changes (if any)
     staged_stash = ""
     if has_staged:
-        print("Stashing staged changes...")
+        print_if_not_quiet("Stashing staged changes...")
         staged_stash = stash_changes("anist_staged_changes")
 
     try:
         # Get the commit hash to edit
         target_commit = get_commit_hash_by_position(position)
-        print(f"Targeting commit: {target_commit}")
+        print_if_not_quiet(f"Targeting commit: {target_commit}")
 
         # Start an interactive rebase
         commit_range = f"{target_commit}^"  # Target's parent commit
@@ -89,7 +90,9 @@ def edit_nth_commit(position: int):
         os.environ["GIT_SEQUENCE_EDITOR"] = editor_cmd
 
         # Start the interactive rebase
-        print(f"Starting interactive rebase to edit commit at position {position}...")
+        print_if_not_quiet(
+            f"Starting interactive rebase to edit commit at position {position}..."
+        )
         run_command(["git", "rebase", "-i", commit_range])
 
         # Cleanup the temp file
@@ -97,7 +100,7 @@ def edit_nth_commit(position: int):
 
         # Apply the staged changes first if we had any
         if has_staged:
-            print("Applying staged changes...")
+            print_if_not_quiet("Applying staged changes...")
             apply_stash(staged_stash)
 
             # Check if there were merge conflicts
@@ -120,20 +123,20 @@ def edit_nth_commit(position: int):
             run_command(["git", "add", "-u"])
 
             # Amend the commit
-            print("Amending the commit...")
+            print_if_not_quiet("Amending the commit...")
             run_command(["git", "commit", "--amend", "--no-edit"])
 
             # Continue the rebase
-            print("Continuing the rebase...")
+            print_if_not_quiet("Continuing the rebase...")
             run_command(["git", "rebase", "--continue"])
 
         # Apply unstaged changes if we had any (after rebase is complete)
         if has_unstaged:
-            print("Applying unstaged changes...")
+            print_if_not_quiet("Applying unstaged changes...")
             apply_stash(unstaged_stash)
-            print("Your unstaged changes have been applied.")
+            print_if_not_quiet("Your unstaged changes have been applied.")
 
-        print("\nRebase successfully completed!")
+        print_if_not_quiet("\nRebase successfully completed!")
 
     except Exception as e:
         print(f"Error during rebase: {e}")

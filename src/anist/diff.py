@@ -3,6 +3,7 @@
 src/diff.py - Diff-related functionality for the Arc Ninja Stack Tool
 """
 
+from anist.state import print_if_not_quiet
 from anist.utils import (
     apply_stash,
     check_changes,
@@ -37,28 +38,28 @@ def create_or_update_diff(
     # Stash any changes to keep the working directory clean
     unstaged_stash = ""
     if has_unstaged:
-        print("Stashing unstaged changes...")
+        print_if_not_quiet("Stashing unstaged changes...")
         unstaged_stash = stash_changes("anist_unstaged_changes_diff")
 
     staged_stash = ""
     if has_staged:
-        print("Stashing staged changes...")
+        print_if_not_quiet("Stashing staged changes...")
         staged_stash = stash_changes("anist_staged_changes_diff")
 
     try:
         # Get the commit hash for the specified position
         commit_hash = get_commit_hash_by_position(position)
-        print(f"Targeting commit at position {position}: {commit_hash}")
+        print_if_not_quiet(f"Targeting commit at position {position}: {commit_hash}")
 
         # Get the short commit message for this commit
         commit_msg = get_commit_message(commit_hash)
-        print(f"Commit message: {commit_msg}")
+        print_if_not_quiet(f"Commit message: {commit_msg}")
 
         # Get the current branch and store it
         original_branch = get_current_branch()
 
         # Checkout the specific commit
-        print(f"Checking out commit {commit_hash}...")
+        print_if_not_quiet(f"Checking out commit {commit_hash}...")
         run_command(["git", "checkout", commit_hash])
 
         # Try to find the diff ID for this commit if we're not in create mode
@@ -68,13 +69,13 @@ def create_or_update_diff(
             diff_ids = get_diff_ids()
             if position in diff_ids:
                 diff_id = diff_ids[position]
-                print(f"Found diff ID for position {position}: {diff_id}")
+                print_if_not_quiet(f"Found diff ID for position {position}: {diff_id}")
 
             # Method 2: Parse from the commit message if available
             if not diff_id:
                 diff_id = find_diff_id_in_commit(commit_hash)
                 if diff_id:
-                    print(f"Found diff ID in commit message: {diff_id}")
+                    print_if_not_quiet(f"Found diff ID in commit message: {diff_id}")
 
             if not diff_id:
                 print(
@@ -85,10 +86,10 @@ def create_or_update_diff(
 
         # Build the arc diff command
         if create_mode:
-            print("Creating new diff...")
+            print_if_not_quiet("Creating new diff...")
             diff_cmd = ["arc", "diff", "HEAD~1", "--nolint"]
         else:
-            print(f"Updating {diff_id}...")
+            print_if_not_quiet(f"Updating {diff_id}...")
             diff_cmd = ["arc", "diff", "HEAD~1", "--nolint", "--update", diff_id]
 
         # Add message if provided
@@ -99,13 +100,13 @@ def create_or_update_diff(
         run_command(diff_cmd)
 
         # Return to the original branch
-        print(f"Returning to branch {original_branch}...")
+        print_if_not_quiet(f"Returning to branch {original_branch}...")
         run_command(["git", "checkout", original_branch])
 
         if create_mode:
-            print("Successfully created new diff!")
+            print_if_not_quiet("Successfully created new diff!")
         else:
-            print(f"Successfully updated diff {diff_id}!")
+            print_if_not_quiet(f"Successfully updated diff {diff_id}!")
 
         return True
 
@@ -115,10 +116,10 @@ def create_or_update_diff(
     finally:
         # Restore any stashed changes
         if has_staged:
-            print("Restoring staged changes...")
+            print_if_not_quiet("Restoring staged changes...")
             apply_stash(staged_stash)
         if has_unstaged:
-            print("Restoring unstaged changes...")
+            print_if_not_quiet("Restoring unstaged changes...")
             apply_stash(unstaged_stash)
 
 
@@ -137,14 +138,14 @@ def update_diff_stack(message: str, create_mode: bool = False):
         print("No commits found in the stack.")
         return
 
-    print(f"Found {len(commits)} commit(s) in the stack.")
+    print_if_not_quiet(f"Found {len(commits)} commit(s) in the stack.")
 
     success_count = 0
     fail_count = 0
 
     for i, _ in enumerate(commits):
         position = i + 1  # 1-based indexing
-        print(
+        print_if_not_quiet(
             f"\n[{position}/{len(commits)}] Processing commit at position {position}..."
         )
 
@@ -153,7 +154,7 @@ def update_diff_stack(message: str, create_mode: bool = False):
         else:
             fail_count += 1
 
-    print(
+    print_if_not_quiet(
         f"\nStack diff update complete: {success_count} successful, {fail_count} failed."
     )
 

@@ -8,17 +8,23 @@ import subprocess
 import sys
 from typing import Dict, List, Optional, Tuple
 
+from anist.state import is_quiet
+
 
 def run_command(
     cmd: List[str], cwd: Optional[str] = None, capture_output: bool = False
 ) -> subprocess.CompletedProcess:
     """Run a shell command and handle errors."""
     try:
+        # If we're capturing output or in quiet mode, use capture_output=True
+        should_capture = capture_output or is_quiet()
+
         result = subprocess.run(
-            cmd, cwd=cwd, check=True, text=True, capture_output=capture_output
+            cmd, cwd=cwd, check=True, text=True, capture_output=should_capture
         )
         return result
     except subprocess.CalledProcessError as e:
+        # Always show errors, even in quiet mode
         print(f"Error executing command: {' '.join(cmd)}")
         print(f"Exit code: {e.returncode}")
         if e.stdout:
