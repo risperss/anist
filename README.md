@@ -1,25 +1,25 @@
-# Anist - Arc Ninja Stack Tool 🧙‍♂️
+# Anist - Arc Ninja Stack Tool
 
 > Anist is a command-line tool designed to streamline workflows with stacked diffs in Phabricator and Arcanist. It provides advanced automation for common tasks when working with stacked commits, allowing developers to focus on code rather than managing version control processes.
 
 ## Table of Contents
 
-- [Installation](#installation) 🚀
+- [Installation](#installation)
   - [Using uv (Recommended)](#using-uv-recommended)
   - [Using pip](#using-pip)
   - [From Source](#from-source)
-- [Commands](#commands) ⌨️
+- [Commands](#commands)
   - [commit - Edit Commits in a Stack](#commit---edit-commits-in-a-stack)
   - [diff - Manage Phabricator Diffs](#diff---manage-phabricator-diffs)
-- [Use Cases](#use-cases) 💡
-- [Technical Details](#technical-details) 🔧
-- [Tips and Tricks](#tips-and-tricks) ✨
-- [Troubleshooting](#troubleshooting) 🔍
-- [Development](#development) 💻
+- [Use Cases](#use-cases)
+- [Technical Details](#technical-details)
+- [Tips and Tricks](#tips-and-tricks)
+- [Troubleshooting](#troubleshooting)
+- [Development](#development)
 
-## Installation 🚀
+## Installation
 
-### Using uv (Recommended) ⚡
+### Using uv (Recommended)
 
 [uv](https://github.com/astral-sh/uv) is a faster, more reliable Python package installer and resolver:
 
@@ -32,7 +32,7 @@ cd ~/repos/anist
 uv pip install -e .
 ```
 
-### Using pip 📦
+### Using pip
 
 ```bash
 # Install directly from GitHub
@@ -43,7 +43,7 @@ cd ~/repos/anist
 pip install -e .
 ```
 
-### From Source 🔧
+### From Source
 
 1. Clone the repository
    ```bash
@@ -62,15 +62,11 @@ pip install -e .
 
 After installation, the `anist` command will be available from any directory.
 
-## Commands ⌨️
+## Commands
 
 Anist uses a modern CLI interface built with [Typer](https://typer.tiangolo.com/), offering rich help text and intuitive command structure with colorful output.
 
-![CLI Demo](https://raw.githubusercontent.com/gaetanorispoli/anist/main/docs/images/cli-demo.png)
-
-> Note: The screenshot above is a mockup. Replace with an actual screenshot of your CLI in action.
-
-### commit - Edit Commits in a Stack 📝
+### commit - Edit Commits in a Stack
 
 The `commit` command automates the process of editing a specific commit in a stack of commits.
 
@@ -105,7 +101,7 @@ anist commit -n 2
 anist commit -n 1
 ```
 
-### diff - Manage Phabricator Diffs 🔄
+### diff - Manage Phabricator Diffs
 
 The `diff` command creates or updates Phabricator diffs for specific commits or entire stacks.
 
@@ -154,9 +150,9 @@ anist diff --full-stack -m "Address code review feedback"
 anist diff --full-stack --create -m "New feature implementation"
 ```
 
-## Use Cases 💡
+## Use Cases
 
-### Implementing a Multi-Commit Feature 🏗️
+### Implementing a Multi-Commit Feature
 
 When working on a large feature that's split into several logical commits:
 
@@ -166,7 +162,7 @@ When working on a large feature that's split into several logical commits:
    - Use `anist commit -n <position>` to make changes to that commit
    - Use `anist diff -n <position>` to update just that diff
 
-### Making Changes in the Middle of a Stack 🎯
+### Making Changes in the Middle of a Stack
 
 If you need to make changes to a commit in the middle of your stack:
 
@@ -175,7 +171,7 @@ If you need to make changes to a commit in the middle of your stack:
 3. The tool will automatically handle the complex rebase process
 4. Run `anist diff -n <position>` to update the corresponding diff
 
-### Updating Multiple Diffs at Once 🔄
+### Updating Multiple Diffs at Once
 
 After addressing review feedback across multiple commits:
 
@@ -185,9 +181,9 @@ anist diff --full-stack -m "Address code review feedback"
 
 This updates all diffs in your stack with a single command.
 
-### Technical Details 🔧
+## Technical Details
 
-### How Commit Editing Works ✏️
+### How Commit Editing Works
 
 The `commit` command:
 
@@ -198,7 +194,7 @@ The `commit` command:
 5. Automatically continues the rebase when changes are applied successfully
 6. Reapplies unstaged changes after the rebase is complete
 
-### How Diff Management Works 📊
+### How Diff Management Works
 
 The `diff` command:
 
@@ -208,7 +204,7 @@ The `diff` command:
 2. Handles checkout and restoration of your workspace state
 3. Uses Arcanist's API for creating and updating diffs
 
-### Conflict Handling ⚠️
+### Conflict Handling
 
 If merge conflicts occur during a commit edit:
 
@@ -218,9 +214,9 @@ If merge conflicts occur during a commit edit:
 4. Let you resolve conflicts manually
 5. Provide instructions for completing the process
 
-## Tips and Tricks ✨
+## Tips and Tricks
 
-### Working with Complex Stacks 🧩
+### Working with Complex Stacks
 
 For stacks with many commits, use `--full-stack` with care:
 
@@ -232,7 +228,7 @@ anist diff -n 1 -m "Fix core logic"
 anist diff --full-stack -m "Update dependent changes"
 ```
 
-### Creating a New Stack from Existing Commits 🆕
+### Creating a New Stack from Existing Commits
 
 If you have a stack of commits that haven't been submitted to Phabricator:
 
@@ -241,7 +237,7 @@ If you have a stack of commits that haven't been submitted to Phabricator:
 anist diff --full-stack --create
 ```
 
-### Updating a Single Diff After a Complex Change 🔄
+### Updating a Single Diff After a Complex Change
 
 After making changes that affect multiple files within a single commit:
 
@@ -256,7 +252,7 @@ anist commit -n 3
 anist diff -n 3 -m "Refactored authentication logic"
 ```
 
-## Troubleshooting 🔍
+## Troubleshooting
 
 ### Changes Not Maintaining Staged/Unstaged Status
 
@@ -266,7 +262,7 @@ If you notice that your staged changes become unstaged after running `anist comm
 2. You can always re-stage the changes with `git add <files>` if needed
 3. The improved stash handling now correctly maintains the staged vs. unstaged status of files
 
-### Error: "Could not determine the diff ID" ❓
+### Error: "Could not determine the diff ID"
 
 When updating a diff and anist can't find the corresponding diff ID:
 
@@ -274,7 +270,7 @@ When updating a diff and anist can't find the corresponding diff ID:
 2. Ensure the commit message is similar to the diff title
 3. If needed, use `--create` to create a new diff instead
 
-### Error During Rebase ⚠️
+### Error During Rebase
 
 If the automatic rebase encounters problems:
 
@@ -283,7 +279,7 @@ If the automatic rebase encounters problems:
 3. Either resolve conflicts or run `git rebase --abort`
 4. Try again with smaller changes
 
-### Stash Recovery 🔄
+### Stash Recovery
 
 If the tool crashes or encounters an unrecoverable error:
 
@@ -291,7 +287,7 @@ If the tool crashes or encounters an unrecoverable error:
 2. Look for entries with "anist" in their description
 3. Apply them with `git stash apply stash@{n}`
 
-### Using From Different Repositories 🌐
+### Using From Different Repositories
 
 Anist is installed globally, so you can use it in any Git repository:
 
@@ -302,9 +298,9 @@ Anist is installed globally, so you can use it in any Git repository:
    anist diff -n 2 -m "Update feature"
    ```
 
-## Development 💻
+## Development
 
-### Setting Up for Development 🛠️
+### Setting Up for Development
 
 1. Clone the repo and install in development mode:
    ```bash
@@ -320,7 +316,7 @@ Anist is installed globally, so you can use it in any Git repository:
    uv pip uninstall anist && uv pip install -e .
    ```
 
-### Project Structure 📁
+### Project Structure
 
 - `src/`
   - `__init__.py` - Package initialization
@@ -329,28 +325,16 @@ Anist is installed globally, so you can use it in any Git repository:
   - `diff.py` - Diff management functionality
   - `utils.py` - Utility functions
 
-### Customizing the Base Branch 🔀
+### Customizing the Base Branch
 
 By default, anist uses "master" as the base branch. If your repository uses a different base branch (e.g., "main"), you'll need to modify the code in `src/utils.py` to change references from "master" to your base branch name.
 
 ---
 
-## Screenshots 📸
+## Contributors
 
-### Command Execution
-![Command Execution](https://raw.githubusercontent.com/gaetanorispoli/anist/main/docs/images/command-execution.png)
-
-### Diff Management
-![Diff Management](https://raw.githubusercontent.com/gaetanorispoli/anist/main/docs/images/diff-management.png)
-
-> Note: These are mockup images. Replace with actual screenshots of your tool in action.
-
-## Contributors ✨
-
-<a href="https://github.com/gaetanorispoli">
-  <img src="https://github.com/gaetanorispoli.png" width="50" height="50" alt="Gaetano Rispoli">
-</a>
+- [Gaetano Rispoli](https://github.com/gaetanorispoli)
 
 ---
 
-With Anist 🧙‍♂️, managing complex stacked diffs in Phabricator becomes significantly more streamlined, allowing developers to focus on writing code rather than managing complex version control operations.
+With Anist, managing complex stacked diffs in Phabricator becomes significantly more streamlined, allowing developers to focus on writing code rather than managing complex version control operations.
