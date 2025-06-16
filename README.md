@@ -333,7 +333,7 @@ By default, anist uses "master" as the base branch. If your repository uses a di
 
 ## Contributors
 
-- [Gaetano Rispoli](https://github.com/gaetanorispoli)
+- [Gaetano Rispoli](https://github.com/risperss)
 
 ---
 

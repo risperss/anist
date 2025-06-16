@@ -126,6 +126,7 @@ def create_or_update_diff(
 def update_diff_stack(message: str, create_mode: bool = False):
     """
     Update or create diffs for all commits in the stack.
+    Exits on first error.
 
     Args:
         message: Update message for all diffs
@@ -141,7 +142,6 @@ def update_diff_stack(message: str, create_mode: bool = False):
     print_if_not_quiet(f"Found {len(commits)} commit(s) in the stack.")
 
     success_count = 0
-    fail_count = 0
 
     for i, _ in enumerate(commits):
         position = i + 1  # 1-based indexing
@@ -152,10 +152,16 @@ def update_diff_stack(message: str, create_mode: bool = False):
         if create_or_update_diff(position, message, create_mode):
             success_count += 1
         else:
-            fail_count += 1
+            print_if_not_quiet(
+                f"Error encountered with diff at position {position}. Stopping."
+            )
+            print_if_not_quiet(
+                f"\nStack diff update stopped: {success_count} successful, 1 failed."
+            )
+            return
 
     print_if_not_quiet(
-        f"\nStack diff update complete: {success_count} successful, {fail_count} failed."
+        f"\nStack diff update complete: {success_count} successful, 0 failed."
     )
 
 
