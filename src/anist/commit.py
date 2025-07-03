@@ -35,17 +35,17 @@ def edit_nth_commit(position: int):
         print("No staged changes to commit. Nothing to do.")
         sys.exit(0)
 
-    # Stash unstaged changes first (if any)
-    unstaged_stash = ""
-    if has_unstaged:
-        print_if_not_quiet("Stashing unstaged changes...")
-        unstaged_stash = stash_changes("anist_unstaged_changes")
-
     # Stash staged changes (if any)
     staged_stash = ""
     if has_staged:
         print_if_not_quiet("Stashing staged changes...")
         staged_stash = stash_changes("anist_staged_changes", staged_only=True)
+
+    # Stash unstaged changes first (if any)
+    unstaged_stash = ""
+    if has_unstaged:
+        print_if_not_quiet("Stashing unstaged changes...")
+        unstaged_stash = stash_changes("anist_unstaged_changes")
 
     try:
         # Get the commit hash to edit
