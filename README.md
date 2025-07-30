@@ -25,7 +25,7 @@
 
 ```bash
 # Install anist using uv
-uv pip install git+https://github.com/gaetanorispoli/anist.git
+uv pip install git+https://github.com/risperss/anist.git
 
 # Or, if you've cloned the repo
 cd ~/repos/anist
@@ -36,7 +36,7 @@ uv pip install -e .
 
 ```bash
 # Install directly from GitHub
-pip install git+https://github.com/gaetanorispoli/anist.git
+pip install git+https://github.com/risperss/anist.git
 
 # Or, if you've cloned the repo
 cd ~/repos/anist
@@ -47,7 +47,7 @@ pip install -e .
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/gaetanorispoli/anist.git
+   git clone https://github.com/risperss/anist.git
    cd ~/repos/anist
    ```
 
@@ -304,7 +304,7 @@ Anist is installed globally, so you can use it in any Git repository:
 
 1. Clone the repo and install in development mode:
    ```bash
-   git clone https://github.com/gaetanorispoli/anist.git
+   git clone https://github.com/risperss/anist.git
    cd ~/repos/anist
    uv pip install -e .
    ```
